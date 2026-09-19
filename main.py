@@ -28,24 +28,51 @@ def main():
     dt: float = 0.0
 
     player = Player(SCREEN_WIDTH/2, SCREEN_HEIGHT/2)
+    
 
     AsteroidField()
 
+
+    font = pygame.font.Font('freesansbold.ttf', 12)
+    fontover = pygame.font.Font('freesansbold.ttf', 40)
     
 
     while True:
         log_state()
+
+    
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 return
         screen.fill("black")
+
+        # remaining lives
+        text = font.render(f"Remaining lives: {player.lives}", True, (255, 255, 255))
+        textRect = text.get_rect()
+        textRect.topleft = (10,10)
+
+        #Game over
+        textover = fontover.render("You lost!", True, (255, 255, 255))
+        overRect = textover.get_rect()
+        overRect.center = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
+        
         updatable.update(dt)
+        screen.blit(text, textRect)
         
         for ast in asteroids:
             if ast.collides_with(player):
-                log_event("player_hit")
-                print("Game over!")
-                sys.exit()
+                player.lives -= 1
+                ast.kill()
+                screen.fill("red")
+                print(f"Remaining lives: {player.lives}")
+                if player.lives <= 0:
+                    log_event("player_hit")
+                    print("Game over!")
+                    screen.fill("black")
+                    screen.blit(textover, overRect)
+                    pygame.display.flip()
+                    pygame.time.wait(2500)
+                    sys.exit()
 
             for shot in shots:
                 if ast.collides_with(shot):
@@ -58,8 +85,12 @@ def main():
 
         pygame.display.flip()
         dt = clock.tick(60) / 1000
+
+        
         
 
+
+    
         
         
 

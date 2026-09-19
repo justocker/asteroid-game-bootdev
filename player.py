@@ -8,6 +8,7 @@ class Player(CircleShape):
         super().__init__(x, y, PLAYER_RADIUS)
         self.rotation = 0
         self.cooldown = 0
+        self.lives = PLAYER_LIVES
 
     # in the Player class
     def triangle(self) -> list[pygame.Vector2]:
